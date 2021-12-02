@@ -18,7 +18,7 @@ RUN usermod -l steam -d /steam node && groupmod -n steam node
 RUN npm install -g  git+https://github.com/mlow/steamcmd-app-update.git
 
 WORKDIR /steam
-COPY entrypoint.sh commands.txt ./
+COPY entrypoint.sh ./
 
 ## Change the following at runtime
 # ... variables for steamcmd-app-update

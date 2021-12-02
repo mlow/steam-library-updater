@@ -1,8 +1,0 @@
-@NoPromptForPassword 1
-@sSteamCmdForcePlatformType %PLATFORM%
-
-login %CREDENTIALS%
-
-runscript /steam/apps.txt
-
-quit
