@@ -21,8 +21,6 @@ WORKDIR /steam
 COPY entrypoint.sh commands.txt ./
 
 ## Change the following at runtime
-# ... ownership of the /steam/.steam directory; match the host
-ENV UID=1000 GID=1000
 # ... variables for steamcmd-app-update
 ENV STEAM_API_KEY= STEAM_PROFILE_ID= SKIP_GAMES= FORCE_VALIDATE=
 # ... variables for steamcmd. Note: default platform is windows

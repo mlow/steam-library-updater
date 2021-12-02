@@ -4,9 +4,11 @@ set -eo pipefail
 
 STEAMROOT=/steam/.steam
 
-# change steam user uid/gid to runtime values
-groupmod -g $GID steam
-usermod -u $UID -g $GID steam
+# Change steam user uid/gid to that of ${STEAMROOT} ownership
+GID=$(stat -c'%g' "${STEAMROOT}")
+UID=$(stat -c'%u' "${STEAMROOT}")
+groupmod -g $GID steam > /dev/null
+usermod -u $UID -g $GID steam > /dev/null
 
 # Force steamcmd to install steam into ${STEAMROOT} instead of $HOME/Steam
 if [ ! -h "${STEAMROOT}/steam" ]; then
