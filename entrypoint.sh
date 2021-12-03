@@ -6,9 +6,8 @@ STEAMROOT=/steam/.steam
 
 # Change steam user uid/gid to that of ${STEAMROOT} ownership
 GID=$(stat -c'%g' "${STEAMROOT}")
-UID=$(stat -c'%u' "${STEAMROOT}")
 groupmod -g $GID steam > /dev/null
-usermod -u $UID -g $GID steam > /dev/null
+usermod -u $(stat -c'%u' "${STEAMROOT}") -g $GID steam > /dev/null
 
 # Force steamcmd to install steam into ${STEAMROOT} instead of $HOME/Steam
 if [ ! -h "${STEAMROOT}/steam" ]; then
