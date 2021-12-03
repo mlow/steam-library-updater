@@ -11,14 +11,14 @@ usermod -u $(stat -c'%u' "${STEAMROOT}") -g $GID steam > /dev/null
 
 # Force steamcmd to install steam into ${STEAMROOT} instead of $HOME/Steam
 if [ ! -h "${STEAMROOT}/steam" ]; then
-	runuser -u steam ln -sf "${STEAMROOT}" "${STEAMROOT}/steam"
+	runuser -u steam -- ln -sf "${STEAMROOT}" "${STEAMROOT}/steam"
 fi
 # ... continued
 if [ ! -d "${STEAMROOT}/steamcmd" ]
 then
-	runuser -u steam mkdir -p "${STEAMROOT}/steamcmd/linux32"
-	runuser -u steam cp /usr/lib/games/steam/steamcmd.sh "$STEAMROOT/steamcmd/"
-	runuser -u steam cp /usr/lib/games/steam/steamcmd    "$STEAMROOT/steamcmd/linux32/"
+	runuser -u steam -- mkdir -p "${STEAMROOT}/steamcmd/linux32"
+	runuser -u steam -- cp /usr/lib/games/steam/steamcmd.sh "$STEAMROOT/steamcmd/"
+	runuser -u steam -- cp /usr/lib/games/steam/steamcmd    "$STEAMROOT/steamcmd/linux32/"
 fi
 
 
@@ -39,4 +39,4 @@ if [ "$2" = "/steam/commands.txt" ]; then
 fi
 
 echo "Running steamcmd..."
-runuser -u steam "${STEAMROOT}"/steamcmd/steamcmd.sh $@
+runuser -u steam -- "${STEAMROOT}"/steamcmd/steamcmd.sh $@
