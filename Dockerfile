@@ -1,4 +1,4 @@
-FROM node:17-bullseye
+FROM node:18-bullseye
 
 # Install steamcmd
 ARG DEBIAN_FRONTEND=noninteractive
