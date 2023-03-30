@@ -11,9 +11,6 @@ RUN sed -i -e 's/debian bullseye main/debian bullseye main non-free/' /etc/apt/s
     && sed -i -e 's/# en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen \
     && locale-gen
 
-# Rename the node user and group to 'steam'
-RUN usermod -l steam -d /steam node && groupmod -n steam node
-
 # Install steamcmd-app-update
 RUN npm install -g  git+https://github.com/mlow/steamcmd-app-update.git
 
