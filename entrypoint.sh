@@ -4,23 +4,21 @@ set -eo pipefail
 
 STEAMROOT=/steam/.steam
 
-# Change steam user uid/gid to that of ${STEAMROOT} ownership
+# Get the UID and GID of the ${STEAMROOT} ownership
+UID=$(stat -c'%u' "${STEAMROOT}")
 GID=$(stat -c'%g' "${STEAMROOT}")
-groupmod -g $GID steam > /dev/null
-usermod -u $(stat -c'%u' "${STEAMROOT}") -g $GID steam > /dev/null
 
 # Force steamcmd to install steam into ${STEAMROOT} instead of $HOME/Steam
 if [ ! -h "${STEAMROOT}/steam" ]; then
-	runuser -u steam -- ln -sf "${STEAMROOT}" "${STEAMROOT}/steam"
+	ln -sf "${STEAMROOT}" "${STEAMROOT}/steam"
 fi
 # ... continued
-if [ ! -d "${STEAMROOT}/steamcmd" ]
-then
-	runuser -u steam -- mkdir -p "${STEAMROOT}/steamcmd/linux32"
-	runuser -u steam -- cp /usr/lib/games/steam/steamcmd.sh "$STEAMROOT/steamcmd/"
-	runuser -u steam -- cp /usr/lib/games/steam/steamcmd    "$STEAMROOT/steamcmd/linux32/"
-fi
+mkdir -p "${STEAMROOT}/steamcmd/linux32"
+cp -u /usr/lib/games/steam/steamcmd.sh "$STEAMROOT/steamcmd/"
+cp -u /usr/lib/games/steam/steamcmd    "$STEAMROOT/steamcmd/linux32/"
 
+# Set proper ownership and permissions for $STEAMROOT
+chown -R $UID:$GID "${STEAMROOT}/steamcmd" "${STEAMROOT}/steam"
 
 if [ "$2" = "/steam/commands.txt" ]; then
 	# only fetch library if we're going to use it
@@ -31,7 +29,6 @@ if [ "$2" = "/steam/commands.txt" ]; then
 	cat <<- EOF > commands.txt
 	@NoPromptForPassword 1
 	@sSteamCmdForcePlatformType ${STEAM_PLATFORM}
-
 	login ${STEAM_USERNAME} ${STEAM_PASSWORD}
 	runscript /steam/apps.txt
 	quit
@@ -39,4 +36,4 @@ if [ "$2" = "/steam/commands.txt" ]; then
 fi
 
 echo "Running steamcmd..."
-runuser -u steam -- "${STEAMROOT}"/steamcmd/steamcmd.sh $@
+setpriv --reuid=$UID --regid=$GID --clear-groups "${STEAMROOT}"/steamcmd/steamcmd.sh $@
